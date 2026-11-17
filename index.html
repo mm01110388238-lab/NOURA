@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina Space ✨ | المنصة الخاصة الذكية</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #120916;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(236, 72, 153, 0.18) 0px, transparent 48%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.16) 0px, transparent 48%),
+                radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #fdf2f8;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar-track { background: #160b1c; }
+        ::-webkit-scrollbar-thumb { background: #4a1d3d; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
+
+        .glass-pink {
+            background: rgba(31, 16, 39, 0.75);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(244, 114, 182, 0.16);
+            box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+        }
+
+        .pkg-radio:checked + div {
+            border-color: #ec4899;
+            background: linear-gradient(145deg, rgba(236, 72, 153, 0.22), rgba(168, 85, 247, 0.10));
+            box-shadow: 0 0 25px -5px rgba(236, 72, 153, 0.45);
+            transform: translateY(-2px);
+        }
+
+        @keyframes floatHeart {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(4deg); }
+        }
+        .animate-float {
+            animation: floatHeart 3.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-pink-500 selection:text-white relative">
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-11/12 max-w-md pointer-events-none"></div>
+
+    <!-- ================= 1. شاشة القفل السرية (PRIVATE LOCK SCREEN) ================= -->
+    <div id="privateLockOverlay" class="fixed inset-0 z-50 bg-[#100714] flex items-center justify-center p-4">
+        <div class="absolute -top-24 -right-24 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="glass-pink rounded-3xl max-w-md w-full p-7 sm:p-8 text-center space-y-6 relative z-10 border border-pink-500/30">
+            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-pink-500 via-rose-400 to-purple-500 flex items-center justify-center text-white text-3xl mx-auto shadow-xl shadow-pink-500/30 animate-float">
+                <i class="fa-solid fa-crown"></i>
+            </div>
+
+            <div class="space-y-1.5">
+                <span class="px-3 py-1 rounded-full bg-pink-500/15 border border-pink-500/30 text-pink-300 text-[11px] font-bold">
+                    ✨ مساحة خاصة ومحمية ✨
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-white via-pink-200 to-purple-300 bg-clip-text text-transparent pt-1">
+                    Lumina Space 🌸
+                </h1>
+                <p class="text-xs text-pink-200/70">هذه المنصة خاصة تماماً، يرجى إدخال كلمة المرور السرية للدخول</p>
+            </div>
+
+            <form onsubmit="unlockPrivateSite(event)" class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="sitePassInput" required placeholder="أدخلي الرمز السري هنا..." dir="ltr"
+                        class="w-full text-center tracking-widest font-mono text-base bg-[#190d22] border border-pink-500/30 focus:border-pink-400 rounded-2xl py-3.5 px-4 text-white placeholder-pink-300/30 outline-none transition">
+                </div>
+                <button type="submit"
+                    class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white font-black text-sm shadow-lg shadow-pink-500/25 transition flex items-center justify-center gap-2">
+                    <span>فتح منصتي الخاصة</span>
+                    <i class="fa-solid fa-sparkles"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 2. محتوى الموقع بعد فتح القفل ================= -->
+    <div id="mainSiteWrapper" class="hidden min-h-screen flex-col justify-between">
+        
+        <!-- Header -->
+        <header class="sticky top-0 z-40 glass-pink border-b border-pink-500/15">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 via-rose-400 to-purple-500 flex items-center justify-center shadow-lg shadow-pink-500/25">
+                        <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 id="brandHeaderName" class="text-lg sm:text-xl font-black bg-gradient-to-r from-white via-pink-200 to-purple-300 bg-clip-text text-transparent">
+                                Lumina Space
+                            </h1>
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30">
+                                VIP 🌸
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-pink-200/60">نظام التقفيل الذكي الخاص بكِ</p>
+                    </div>
+                </div>
+
+                <button onclick="lockSiteAgain()"
+                    class="px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                    <span>قفل الموقع</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
+            
+            <!-- Welcome Card -->
+            <div class="glass-pink rounded-3xl p-6 sm:p-7 border border-pink-500/25 relative overflow-hidden">
+                <div class="absolute -left-16 -top-16 w-52 h-52 bg-pink-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/15 border border-pink-500/30 text-pink-300 text-xs font-bold">
+                            <span>✨ أهلاً بكِ في مساحتك الخاصة</span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black text-white">
+                            تقفيل فوري للمنصات بتقييم 100% PERFECT 💎
+                        </h2>
+                        <p class="text-pink-100/75 text-xs sm:text-sm">
+                            اختاري المرحلة والمنصة المطلوبة، واكتبي كود الحساب والباسورد ليبدأ البوت في تقفيل الفصول فوراً.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solver Form -->
+            <form id="solverForm" onsubmit="submitGirlOrder(event)" class="glass-pink rounded-3xl p-5 sm:p-7 space-y-6 border border-pink-500/20">
+                
+                <!-- Grade Selector -->
+                <div class="space-y-3">
+                    <label class="block text-sm font-black text-pink-200">
+                        <i class="fa-solid fa-graduation-cap text-pink-400 ml-1"></i> 1. اختاري السنة الدراسية:
+                    </label>
+                    <div class="grid grid-cols-2 gap-3 bg-[#150a1c] p-2 rounded-2xl border border-pink-500/20">
+                        <button type="button" id="btnGrade2" onclick="switchGrade('sec2')"
+                            class="py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md">
+                            <span>الصف الثاني الثانوي</span>
+                        </button>
+                        <button type="button" id="btnGrade1" onclick="switchGrade('sec1')"
+                            class="py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-pink-200/70 hover:text-white">
+                            <span>الصف الأول الثانوي</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Packages for Sec 2 -->
+                <div id="sec2List" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label class="cursor-pointer block">
+                        <input type="radio" name="selectedPkg" value="تانية ثانوي - برمجة Qureo (54 فصل)" class="sr-only pkg-radio" checked>
+                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all h-full flex flex-col justify-between gap-2">
+                            <div class="flex items-center justify-between">
+                                <span class="w-9 h-9 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center"><i class="fa-solid fa-laptop-code"></i></span>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300">54 فصل</span>
+                            </div>
+                            <div>
+                                <h4 class="font-black text-white text-sm">منصة البرمجة (Qureo)</h4>
+                                <p class="text-[11px] text-pink-200/60 mt-0.5">تقفيل الـ 54 فصل + الألماس كامل</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer block">
+                        <input type="radio" name="selectedPkg" value="تانية ثانوي - الثقافة المالية (22 مستوى)" class="sr-only pkg-radio">
+                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all h-full flex flex-col justify-between gap-2">
+                            <div class="flex items-center justify-between">
+                                <span class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-coins"></i></span>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">22 مستوى</span>
+                            </div>
+                            <div>
+                                <h4 class="font-black text-white text-sm">الثقافة المالية</h4>
+                                <p class="text-[11px] text-pink-200/60 mt-0.5">تقفيل الـ 22 مستوى والاختبارات</p>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer block">
+                        <input type="radio" name="selectedPkg" value="تانية ثانوي - المنصتين معاً (برمجة + ثقافة)" class="sr-only pkg-radio">
+                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all h-full flex flex-col justify-between gap-2">
+                            <div class="flex items-center justify-between">
+                                <span class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center"><i class="fa-solid fa-crown"></i></span>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">شامل ✨</span>
+                            </div>
+                            <div>
+                                <h4 class="font-black text-white text-sm">المنصتين معاً 🌸</h4>
+                                <p class="text-[11px] text-pink-200/60 mt-0.5">تقفيل البرمجة + الثقافة المالية معاً</p>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Packages for Sec 1 -->
+                <div id="sec1List" class="hidden grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="cursor-pointer block">
+                        <input type="radio" name="selectedPkg" id="sec1HalfRadio" value="أولى ثانوي - برمجة Qureo (21 فصل)" class="sr-only pkg-radio">
+                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all flex flex-col gap-2">
+                            <div class="flex items-center justify-between">
+                                <span class="w-9 h-9 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></span>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300">21 فصل</span>
+                            </div>
+                            <h4 class="font-black text-white text-sm">تقفيل نصف المنصة (21 فصل)</h4>
+                        </div>
+                    </label>
+
+                    <label class="cursor-pointer block">
+                        <input type="radio" name="selectedPkg" id="sec1FullRadio" value="أولى ثانوي - برمجة Qureo كاملة (42 فصل)" class="sr-only pkg-radio">
+                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all flex flex-col gap-2">
+                            <div class="flex items-center justify-between">
+                                <span class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-gem"></i></span>
+                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">42 فصل كامل 💎</span>
+                            </div>
+                            <h4 class="font-black text-white text-sm">تقفيل المنصة بالكامل (42 فصل)</h4>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Account Credentials -->
+                <div class="space-y-4 pt-2 border-t border-pink-500/15">
+                    <label class="block text-sm font-black text-pink-200">
+                        <i class="fa-solid fa-key text-pink-400 ml-1"></i> 2. بيانات الحساب المراد تقفيله:
+                    </label>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-bold text-pink-200/80 mb-1.5">اسم صاحب الحساب (اختياري للمتابعة)</label>
+                            <input type="text" id="accOwnerName" placeholder="مثال: حسابي الشخصي / أو اسم الصديقة"
+                                class="w-full bg-[#160b1e] border border-pink-500/25 focus:border-pink-400 rounded-xl py-2.5 px-3.5 text-sm text-white placeholder-pink-200/30 outline-none transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-pink-200/80 mb-1.5">كود المستخدم (Username / ID) <span class="text-rose-400">*</span></label>
+                            <input type="text" id="accUsername" required placeholder="مثال: 474860097" dir="ltr"
+                                class="w-full bg-[#160b1e] border border-pink-500/25 focus:border-pink-400 rounded-xl py-2.5 px-3.5 text-sm text-left text-white font-mono placeholder-pink-200/30 outline-none transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-pink-200/80 mb-1.5">كلمة المرور (Password) <span class="text-rose-400">*</span></label>
+                            <div class="relative">
+                                <input type="password" id="accPassword" required placeholder="باسورد المنصة" dir="ltr"
+                                    class="w-full bg-[#160b1e] border border-pink-500/25 focus:border-pink-400 rounded-xl py-2.5 pl-10 pr-3.5 text-sm text-left text-white font-mono placeholder-pink-200/30 outline-none transition">
+                                <button type="button" onclick="togglePassVis()" class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-pink-300/60 hover:text-pink-300">
+                                    <i id="eyeIcon" class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn"
+                    class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-black text-base shadow-xl shadow-pink-500/25 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>بدء تقفيل الحساب الآن ✨</span>
+                </button>
+            </form>
+
+            <!-- سجل الحسابات المرسلة -->
+            <div class="glass-pink rounded-3xl p-5 sm:p-6 space-y-4 border border-pink-500/15">
+                <div class="flex items-center justify-between border-b border-pink-500/15 pb-3">
+                    <h3 class="text-sm sm:text-base font-black text-pink-200 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-pink-400"></i>
+                        <span>سجل الحسابات التي أرسلتِها</span>
+                    </h3>
+                    <button onclick="clearHistory()" class="text-[11px] text-rose-300/70 hover:text-rose-300 font-bold">مسح السجل</button>
+                </div>
+                <div id="myOrdersList" class="space-y-3"></div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="border-t border-pink-500/15 py-5 text-center text-xs text-pink-200/50 glass-pink">
+            <p>صُمم خصيصاً بكل لطف ✨ <span class="text-pink-400 font-bold">Lumina Space VIP</span></p>
+        </footer>
+    </div>
+
+    <script>
+        // ================= إعدادات الموقع السريعة =================
+        const SITE_SECRET_PASS = "2026"; // الباسورد الخاص بها لفتح الموقع (غيره كما تحب)
+        const SITE_OWNER_TITLE = "Lumina Space"; // اسم الموقع (يمكنك تغييره لاسمها)
+        
+        // بيانات بوت التيليجرام الذي يستقبل الطلبات
+        const TG_BOT_TOKEN = "9092264312:AAF2tpkDmM7MU_hAnyGBQKz8lL_uUsfT8mA";
+        const TG_CHAT_ID = "6659573986";
+
+        let savedHistory = JSON.parse(localStorage.getItem('lumina_orders') || '[]');
+
+        window.addEventListener('load', () => {
+            document.getElementById('brandHeaderName').textContent = SITE_OWNER_TITLE;
+            if (sessionStorage.getItem('lumina_unlocked') === 'true') {
+                showUnlockedView();
+            }
+            renderHistory();
+        });
+
+        function unlockPrivateSite(e) {
+            e.preventDefault();
+            const entered = document.getElementById('sitePassInput').value.trim();
+            if (entered === SITE_SECRET_PASS) {
+                sessionStorage.setItem('lumina_unlocked', 'true');
+                showUnlockedView();
+                showToast('أهلاً بكِ في منصتك الخاصة 🌸', 'success');
+            } else {
+                showToast('كلمة المرور غير صحيحة! حاولي مرة أخرى 🔒', 'error');
+            }
+        }
+
+        function showUnlockedView() {
+            document.getElementById('privateLockOverlay').classList.add('hidden');
+            const wrapper = document.getElementById('mainSiteWrapper');
+            wrapper.classList.remove('hidden');
+            wrapper.classList.add('flex');
+        }
+
+        function lockSiteAgain() {
+            sessionStorage.removeItem('lumina_unlocked');
+            document.getElementById('sitePassInput').value = '';
+            document.getElementById('privateLockOverlay').classList.remove('hidden');
+            document.getElementById('mainSiteWrapper').classList.add('hidden');
+        }
+
+        function switchGrade(grade) {
+            const b2 = document.getElementById('btnGrade2');
+            const b1 = document.getElementById('btnGrade1');
+            const l2 = document.getElementById('sec2List');
+            const l1 = document.getElementById('sec1List');
+
+            if (grade === 'sec2') {
+                b2.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md";
+                b1.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-pink-200/70 hover:text-white";
+                l2.classList.remove('hidden');
+                l2.classList.add('grid');
+                l1.classList.add('hidden');
+                l1.classList.remove('grid');
+                l2.querySelector('input').checked = true;
+            } else {
+                b1.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md";
+                b2.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-pink-200/70 hover:text-white";
+                l1.classList.remove('hidden');
+                l1.classList.add('grid');
+                l2.classList.add('hidden');
+                l2.classList.remove('grid');
+                document.getElementById('sec1FullRadio').checked = true;
+            }
+        }
+
+        function togglePassVis() {
+            const inp = document.getElementById('accPassword');
+            const icon = document.getElementById('eyeIcon');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                inp.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        async function submitGirlOrder(e) {
+            e.preventDefault();
+            const pkg = document.querySelector('input[name="selectedPkg"]:checked').value;
+            const owner = document.getElementById('accOwnerName').value.trim() || 'حساب خاص 🌸';
+            const username = document.getElementById('accUsername').value.trim();
+            const password = document.getElementById('accPassword').value;
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>جاري إرسال الحساب للتقفيل...</span>`;
+
+            const orderCode = `LM-${Math.floor(1000 + Math.random() * 9000)}`;
+            const textMessage = 
+                `🌸 <b>طلب تقفيل جديد من المنصة الخاصة (${SITE_OWNER_TITLE})!</b>\n` +
+                `━━━━━━━━━━━━━━━━━━━━\n` +
+                `🆔 <b>كود الطلب:</b> <code>${orderCode}</code>\n` +
+                `👑 <b>الاسم/الوصف:</b> ${owner}\n` +
+                `📦 <b>الباقة:</b> ${pkg}\n` +
+                `💻 <b>اليوزر (ID):</b> <code>${username}</code>\n` +
+                `🔑 <b>الباسورد:</b> <code>${password}</code>\n` +
+                `━━━━━━━━━━━━━━━━━━━━\n` +
+                `✨ <i>طلب VIP معفى من الإيصال — جاهز للتقفيل الفوري</i>`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TG_CHAT_ID,
+                        text: textMessage,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                const item = {
+                    code: orderCode,
+                    owner,
+                    pkg,
+                    username,
+                    time: new Date().toLocaleString('ar-EG')
+                };
+                savedHistory.unshift(item);
+                localStorage.setItem('lumina_orders', JSON.stringify(savedHistory));
+                renderHistory();
+
+                document.getElementById('solverForm').reset();
+                switchGrade('sec2');
+                showToast('تم إرسال الحساب بنجاح! جاري التقفيل الآن ✨', 'success');
+            } catch (err) {
+                showToast('حدث خطأ أثناء الإرسال، تأكدي من اتصال الإنترنت', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>بدء تقفيل الحساب الآن ✨</span>`;
+            }
+        }
+
+        function renderHistory() {
+            const box = document.getElementById('myOrdersList');
+            if (savedHistory.length === 0) {
+                box.innerHTML = `<p class="text-center text-xs text-pink-200/40 py-4">لا توجد حسابات مرسلة حتى الآن 🌸</p>`;
+                return;
+            }
+            box.innerHTML = savedHistory.map(item => `
+                <div class="bg-[#160b1e]/90 border border-pink-500/20 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-2">
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs font-black text-pink-300 bg-pink-500/15 px-2 py-0.5 rounded-lg">${item.code}</span>
+                            <span class="text-xs font-bold text-white">${item.owner}</span>
+                        </div>
+                        <p class="text-[11px] text-pink-200/70">${item.pkg} — اليوزر: <span class="font-mono text-pink-300">${item.username}</span></p>
+                    </div>
+                    <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                        ✨ تم الإرسال للتقفيل
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            savedHistory = [];
+            localStorage.setItem('lumina_orders', '[]');
+            renderHistory();
+            showToast('تم مسح السجل بنجاح', 'success');
+        }
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            const style = type === 'success' 
+                ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white border-pink-300' 
+                : 'bg-rose-600 text-white border-rose-400';
+            t.className = `pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-2xl border shadow-xl font-bold text-xs sm:text-sm ${style}`;
+            t.innerHTML = `<i class="fa-solid fa-sparkles"></i><span>${msg}</span>`;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
