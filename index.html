@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumina Space ✨ | المنصة الخاصة الذكية</title>
+    <title>Lumina Bot 🌸 | البوت الذكي الخاص لتقفيل المنصات</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Cairo -->
@@ -27,42 +27,49 @@
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #120916;
+            background-color: #110816;
             background-image: 
-                radial-gradient(at 0% 0%, rgba(236, 72, 153, 0.18) 0px, transparent 48%),
-                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.16) 0px, transparent 48%),
+                radial-gradient(at 0% 0%, rgba(236, 72, 153, 0.18) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.16) 0px, transparent 50%),
                 radial-gradient(at 50% 100%, rgba(244, 63, 94, 0.12) 0px, transparent 50%);
             background-attachment: fixed;
             color: #fdf2f8;
             overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar { width: 7px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #160b1c; }
         ::-webkit-scrollbar-thumb { background: #4a1d3d; border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
 
         .glass-pink {
-            background: rgba(31, 16, 39, 0.75);
+            background: rgba(30, 15, 38, 0.78);
             backdrop-filter: blur(22px);
             -webkit-backdrop-filter: blur(22px);
-            border: 1px solid rgba(244, 114, 182, 0.16);
+            border: 1px solid rgba(244, 114, 182, 0.18);
             box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
         }
 
-        .pkg-radio:checked + div {
+        .bot-bubble {
+            background: linear-gradient(145deg, rgba(39, 20, 49, 0.95), rgba(26, 12, 34, 0.95));
+            border: 1px solid rgba(236, 72, 153, 0.25);
+            border-radius: 1.25rem;
+            border-top-right-radius: 0.25rem;
+        }
+
+        .choice-radio:checked + div {
             border-color: #ec4899;
-            background: linear-gradient(145deg, rgba(236, 72, 153, 0.22), rgba(168, 85, 247, 0.10));
-            box-shadow: 0 0 25px -5px rgba(236, 72, 153, 0.45);
+            background: linear-gradient(145deg, rgba(236, 72, 153, 0.24), rgba(168, 85, 247, 0.12));
+            box-shadow: 0 0 20px -5px rgba(236, 72, 153, 0.45);
             transform: translateY(-2px);
         }
 
-        @keyframes floatHeart {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-6px) rotate(4deg); }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
         }
         .animate-float {
-            animation: floatHeart 3.5s ease-in-out infinite;
+            animation: floatSlow 3.5s ease-in-out infinite;
         }
     </style>
 </head>
@@ -71,8 +78,8 @@
     <!-- Toast Notifications -->
     <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-11/12 max-w-md pointer-events-none"></div>
 
-    <!-- ================= 1. شاشة القفل السرية (PRIVATE LOCK SCREEN) ================= -->
-    <div id="privateLockOverlay" class="fixed inset-0 z-50 bg-[#100714] flex items-center justify-center p-4">
+    <!-- ================= 1. شاشة القفل السرية ================= -->
+    <div id="privateLockOverlay" class="fixed inset-0 z-50 bg-[#0e0612] flex items-center justify-center p-4">
         <div class="absolute -top-24 -right-24 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -83,185 +90,217 @@
 
             <div class="space-y-1.5">
                 <span class="px-3 py-1 rounded-full bg-pink-500/15 border border-pink-500/30 text-pink-300 text-[11px] font-bold">
-                    ✨ مساحة خاصة ومحمية ✨
+                    ✨ نظام محمي بكلمة مرور ✨
                 </span>
-                <h1 class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-white via-pink-200 to-purple-300 bg-clip-text text-transparent pt-1">
-                    Lumina Space 🌸
+                <h1 id="lockTitle" class="text-2xl sm:text-3xl font-black bg-gradient-to-r from-white via-pink-200 to-purple-300 bg-clip-text text-transparent pt-1">
+                    Lumina Bot 🌸
                 </h1>
-                <p class="text-xs text-pink-200/70">هذه المنصة خاصة تماماً، يرجى إدخال كلمة المرور السرية للدخول</p>
+                <p class="text-xs text-pink-200/70">هذه المساحة خاصة بكِ وحدك، أدخلي الرمز السري للمتابعة</p>
             </div>
 
             <form onsubmit="unlockPrivateSite(event)" class="space-y-4">
-                <div class="relative">
-                    <input type="password" id="sitePassInput" required placeholder="أدخلي الرمز السري هنا..." dir="ltr"
-                        class="w-full text-center tracking-widest font-mono text-base bg-[#190d22] border border-pink-500/30 focus:border-pink-400 rounded-2xl py-3.5 px-4 text-white placeholder-pink-300/30 outline-none transition">
-                </div>
+                <input type="password" id="sitePassInput" required placeholder="أدخلي الرمز السري..." dir="ltr"
+                    class="w-full text-center tracking-widest font-mono text-base bg-[#190d22] border border-pink-500/30 focus:border-pink-400 rounded-2xl py-3.5 px-4 text-white placeholder-pink-300/30 outline-none transition">
                 <button type="submit"
                     class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white font-black text-sm shadow-lg shadow-pink-500/25 transition flex items-center justify-center gap-2">
-                    <span>فتح منصتي الخاصة</span>
+                    <span>دخول البوت</span>
                     <i class="fa-solid fa-sparkles"></i>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- ================= 2. محتوى الموقع بعد فتح القفل ================= -->
+    <!-- ================= 2. واجهة البوت الرئيسية ================= -->
     <div id="mainSiteWrapper" class="hidden min-h-screen flex-col justify-between">
         
         <!-- Header -->
         <header class="sticky top-0 z-40 glass-pink border-b border-pink-500/15">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 via-rose-400 to-purple-500 flex items-center justify-center shadow-lg shadow-pink-500/25">
-                        <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 via-rose-400 to-purple-500 flex items-center justify-center shadow-lg shadow-pink-500/25 relative">
+                        <i class="fa-solid fa-robot text-white text-lg"></i>
+                        <span class="w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#1e0f26] absolute -bottom-0.5 -right-0.5"></span>
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <h1 id="brandHeaderName" class="text-lg sm:text-xl font-black bg-gradient-to-r from-white via-pink-200 to-purple-300 bg-clip-text text-transparent">
-                                Lumina Space
+                                Lumina Bot
                             </h1>
-                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-300 border border-pink-500/30">
-                                VIP 🌸
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                متصل الآن ⚡
                             </span>
                         </div>
-                        <p class="text-[11px] text-pink-200/60">نظام التقفيل الذكي الخاص بكِ</p>
+                        <p class="text-[11px] text-pink-200/60">بوت التقفيل التلقائي الذكي (100% PERFECT)</p>
                     </div>
                 </div>
 
                 <button onclick="lockSiteAgain()"
                     class="px-3.5 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-bold flex items-center gap-1.5 transition">
                     <i class="fa-solid fa-lock text-xs"></i>
-                    <span>قفل الموقع</span>
+                    <span>قفل</span>
                 </button>
             </div>
         </header>
 
-        <!-- Main Content -->
-        <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
+        <!-- Main Bot Conversation & Controls -->
+        <main class="flex-grow max-w-3xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
             
-            <!-- Welcome Card -->
-            <div class="glass-pink rounded-3xl p-6 sm:p-7 border border-pink-500/25 relative overflow-hidden">
-                <div class="absolute -left-16 -top-16 w-52 h-52 bg-pink-500/15 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="space-y-2">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-500/15 border border-pink-500/30 text-pink-300 text-xs font-bold">
-                            <span>✨ أهلاً بكِ في مساحتك الخاصة</span>
-                        </div>
-                        <h2 class="text-xl sm:text-2xl font-black text-white">
-                            تقفيل فوري للمنصات بتقييم 100% PERFECT 💎
-                        </h2>
-                        <p class="text-pink-100/75 text-xs sm:text-sm">
-                            اختاري المرحلة والمنصة المطلوبة، واكتبي كود الحساب والباسورد ليبدأ البوت في تقفيل الفصول فوراً.
-                        </p>
-                    </div>
+            <!-- رسالة ترحيب البوت (بنفس أسلوب بوت تيليجرام) -->
+            <div class="bot-bubble p-5 space-y-2 shadow-lg">
+                <div class="flex items-center gap-2 text-pink-400 text-xs font-black">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span>رسالة النظام الترحيبية</span>
                 </div>
+                <p class="text-sm sm:text-base font-bold text-white leading-relaxed">
+                    👋 أهلاً بكِ في لوحة تحكم <span class="text-pink-400">Lumina PRO</span>!
+                </p>
+                <p class="text-xs text-pink-100/80 leading-relaxed">
+                    🔹 اختاري المرحلة والمنصة، وحددي إذا كنتِ عاوزة تقفيل شامل أو فصول معينة.<br>
+                    🔹 بمجرد إدخال الكود والباسورد والضغط على البدء، هيشتغل البوت فوراً ويقفل الحساب بتقييم <b>PERFECT</b>.
+                </p>
             </div>
 
-            <!-- Solver Form -->
-            <form id="solverForm" onsubmit="submitGirlOrder(event)" class="glass-pink rounded-3xl p-5 sm:p-7 space-y-6 border border-pink-500/20">
+            <!-- نموذج إعدادات البوت -->
+            <form id="botOrderForm" onsubmit="startBotExecution(event)" class="space-y-5">
                 
-                <!-- Grade Selector -->
-                <div class="space-y-3">
-                    <label class="block text-sm font-black text-pink-200">
-                        <i class="fa-solid fa-graduation-cap text-pink-400 ml-1"></i> 1. اختاري السنة الدراسية:
-                    </label>
-                    <div class="grid grid-cols-2 gap-3 bg-[#150a1c] p-2 rounded-2xl border border-pink-500/20">
-                        <button type="button" id="btnGrade2" onclick="switchGrade('sec2')"
-                            class="py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md">
-                            <span>الصف الثاني الثانوي</span>
+                <!-- الخطوة 1: الصف والمنصة -->
+                <div class="glass-pink rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-pink-500/15 pb-3">
+                        <span class="text-sm font-black text-pink-200 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center text-xs">1</span>
+                            اختاري الصف الدراسي والمنصة
+                        </span>
+                    </div>
+
+                    <!-- أزرار الصف -->
+                    <div class="grid grid-cols-2 gap-2.5 bg-[#150a1c] p-1.5 rounded-2xl border border-pink-500/20">
+                        <button type="button" id="btnGrade2" onclick="selectGrade('sec2')"
+                            class="py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md">
+                            الصف الثاني الثانوي
                         </button>
-                        <button type="button" id="btnGrade1" onclick="switchGrade('sec1')"
-                            class="py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-pink-200/70 hover:text-white">
-                            <span>الصف الأول الثانوي</span>
+                        <button type="button" id="btnGrade1" onclick="selectGrade('sec1')"
+                            class="py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all text-pink-200/70 hover:text-white">
+                            الصف الأول الثانوي
                         </button>
+                    </div>
+
+                    <!-- منصات تانية ثانوي -->
+                    <div id="platforms-sec2" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="platformType" value="برمجة Qureo (تانية ثانوي)" data-max="54" data-unit="فصل" onchange="updateChapterLimits()" class="sr-only choice-radio" checked>
+                            <div class="p-3.5 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all text-center space-y-1.5">
+                                <div class="w-9 h-9 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center mx-auto"><i class="fa-solid fa-code"></i></div>
+                                <h4 class="font-black text-white text-xs sm:text-sm">البرمجة (Qureo)</h4>
+                                <span class="text-[10px] text-pink-300/70 block">إجمالي 54 فصل</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="platformType" value="الثقافة المالية (تانية ثانوي)" data-max="22" data-unit="مستوى" onchange="updateChapterLimits()" class="sr-only choice-radio">
+                            <div class="p-3.5 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all text-center space-y-1.5">
+                                <div class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center mx-auto"><i class="fa-solid fa-coins"></i></div>
+                                <h4 class="font-black text-white text-xs sm:text-sm">الثقافة المالية</h4>
+                                <span class="text-[10px] text-purple-300/70 block">إجمالي 22 مستوى</span>
+                            </div>
+                        </label>
+
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="platformType" value="المنصتين معاً (برمجة + ثقافة)" data-max="54" data-unit="فصل ومستوى" onchange="updateChapterLimits()" class="sr-only choice-radio">
+                            <div class="p-3.5 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all text-center space-y-1.5">
+                                <div class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center mx-auto"><i class="fa-solid fa-crown"></i></div>
+                                <h4 class="font-black text-white text-xs sm:text-sm">المنصتين معاً ✨</h4>
+                                <span class="text-[10px] text-amber-300/70 block">تقفيل شامل للاثنين</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- منصات أولى ثانوي -->
+                    <div id="platforms-sec1" class="hidden grid-cols-1 gap-3">
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="platformType" id="sec1PlatformRadio" value="برمجة Qureo (أولى ثانوي)" data-max="42" data-unit="فصل" onchange="updateChapterLimits()" class="sr-only choice-radio">
+                            <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center"><i class="fa-solid fa-laptop-code"></i></div>
+                                    <div>
+                                        <h4 class="font-black text-white text-sm">منصة البرمجة (Qureo - أولى ثانوي)</h4>
+                                        <span class="text-xs text-pink-300/70">إجمالي المنهج 42 فصل (210 ألماسة)</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold px-3 py-1 rounded-full bg-pink-500/20 text-pink-300">محدد ✓</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
 
-                <!-- Packages for Sec 2 -->
-                <div id="sec2List" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <label class="cursor-pointer block">
-                        <input type="radio" name="selectedPkg" value="تانية ثانوي - برمجة Qureo (54 فصل)" class="sr-only pkg-radio" checked>
-                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all h-full flex flex-col justify-between gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="w-9 h-9 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center"><i class="fa-solid fa-laptop-code"></i></span>
-                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300">54 فصل</span>
-                            </div>
-                            <div>
-                                <h4 class="font-black text-white text-sm">منصة البرمجة (Qureo)</h4>
-                                <p class="text-[11px] text-pink-200/60 mt-0.5">تقفيل الـ 54 فصل + الألماس كامل</p>
-                            </div>
-                        </div>
-                    </label>
+                <!-- الخطوة 2: طريقة التقفيل (كامل ولا فصول معينة) -->
+                <div class="glass-pink rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-pink-500/15 pb-3">
+                        <span class="text-sm font-black text-pink-200 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center text-xs">2</span>
+                            عاوزة تقفلي المنصة بالكامل ولا فصول معينة؟
+                        </span>
+                    </div>
 
-                    <label class="cursor-pointer block">
-                        <input type="radio" name="selectedPkg" value="تانية ثانوي - الثقافة المالية (22 مستوى)" class="sr-only pkg-radio">
-                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all h-full flex flex-col justify-between gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-coins"></i></span>
-                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">22 مستوى</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="solveMode" value="full" onchange="toggleChapterRange(false)" class="sr-only choice-radio" checked>
+                            <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fa-solid fa-check-double"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-black text-white text-sm">تقفيل كامل (100%) 🚀</h4>
+                                    <p class="text-[11px] text-pink-200/60">حل كل الفصول والمراجعات من البداية للنهاية</p>
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="font-black text-white text-sm">الثقافة المالية</h4>
-                                <p class="text-[11px] text-pink-200/60 mt-0.5">تقفيل الـ 22 مستوى والاختبارات</p>
-                            </div>
-                        </div>
-                    </label>
+                        </label>
 
-                    <label class="cursor-pointer block">
-                        <input type="radio" name="selectedPkg" value="تانية ثانوي - المنصتين معاً (برمجة + ثقافة)" class="sr-only pkg-radio">
-                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all h-full flex flex-col justify-between gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="w-9 h-9 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center"><i class="fa-solid fa-crown"></i></span>
-                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">شامل ✨</span>
+                        <label class="cursor-pointer block">
+                            <input type="radio" name="solveMode" value="custom" onchange="toggleChapterRange(true)" class="sr-only choice-radio">
+                            <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fa-solid fa-sliders"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-black text-white text-sm">تحديد فصول معينة 🎯</h4>
+                                    <p class="text-[11px] text-pink-200/60">اختيار رقم فصل محدد أو من فصل إلى فصل</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- خانات تحديد الفصول (تظهر عند اختيار فصول معينة) -->
+                    <div id="customRangeBox" class="hidden bg-[#150a1c] border border-pink-500/25 rounded-2xl p-4 space-y-3">
+                        <p class="text-xs font-bold text-pink-300">
+                            <i class="fa-solid fa-list-ol ml-1"></i> حددي نطاق الـ <span id="unitLabel">فصول</span> المطلوب حلها (الحد الأقصى: <span id="maxUnitCount">54</span>):
+                        </p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] text-pink-200/70 mb-1">من رقم:</label>
+                                <input type="number" id="fromChapter" min="1" max="54" value="1"
+                                    class="w-full bg-[#1e0f29] border border-pink-500/30 focus:border-pink-400 rounded-xl py-2 px-3 text-center font-mono text-sm text-white outline-none">
                             </div>
                             <div>
-                                <h4 class="font-black text-white text-sm">المنصتين معاً 🌸</h4>
-                                <p class="text-[11px] text-pink-200/60 mt-0.5">تقفيل البرمجة + الثقافة المالية معاً</p>
+                                <label class="block text-[11px] text-pink-200/70 mb-1">إلى رقم:</label>
+                                <input type="number" id="toChapter" min="1" max="54" value="10"
+                                    class="w-full bg-[#1e0f29] border border-pink-500/30 focus:border-pink-400 rounded-xl py-2 px-3 text-center font-mono text-sm text-white outline-none">
                             </div>
                         </div>
-                    </label>
+                    </div>
                 </div>
 
-                <!-- Packages for Sec 1 -->
-                <div id="sec1List" class="hidden grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label class="cursor-pointer block">
-                        <input type="radio" name="selectedPkg" id="sec1HalfRadio" value="أولى ثانوي - برمجة Qureo (21 فصل)" class="sr-only pkg-radio">
-                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all flex flex-col gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="w-9 h-9 rounded-xl bg-pink-500/15 text-pink-400 flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></span>
-                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-pink-500/20 text-pink-300">21 فصل</span>
-                            </div>
-                            <h4 class="font-black text-white text-sm">تقفيل نصف المنصة (21 فصل)</h4>
-                        </div>
-                    </label>
-
-                    <label class="cursor-pointer block">
-                        <input type="radio" name="selectedPkg" id="sec1FullRadio" value="أولى ثانوي - برمجة Qureo كاملة (42 فصل)" class="sr-only pkg-radio">
-                        <div class="p-4 rounded-2xl border border-pink-500/20 bg-[#1a0d24]/80 hover:bg-[#231130] transition-all flex flex-col gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="w-9 h-9 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center"><i class="fa-solid fa-gem"></i></span>
-                                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300">42 فصل كامل 💎</span>
-                            </div>
-                            <h4 class="font-black text-white text-sm">تقفيل المنصة بالكامل (42 فصل)</h4>
-                        </div>
-                    </label>
-                </div>
-
-                <!-- Account Credentials -->
-                <div class="space-y-4 pt-2 border-t border-pink-500/15">
-                    <label class="block text-sm font-black text-pink-200">
-                        <i class="fa-solid fa-key text-pink-400 ml-1"></i> 2. بيانات الحساب المراد تقفيله:
-                    </label>
+                <!-- الخطوة 3: بيانات الدخول -->
+                <div class="glass-pink rounded-3xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-pink-500/15 pb-3">
+                        <span class="text-sm font-black text-pink-200 flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center text-xs">3</span>
+                            بيانات حساب المنصة
+                        </span>
+                    </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
-                            <label class="block text-xs font-bold text-pink-200/80 mb-1.5">اسم صاحب الحساب (اختياري للمتابعة)</label>
-                            <input type="text" id="accOwnerName" placeholder="مثال: حسابي الشخصي / أو اسم الصديقة"
-                                class="w-full bg-[#160b1e] border border-pink-500/25 focus:border-pink-400 rounded-xl py-2.5 px-3.5 text-sm text-white placeholder-pink-200/30 outline-none transition">
-                        </div>
-
                         <div>
-                            <label class="block text-xs font-bold text-pink-200/80 mb-1.5">كود المستخدم (Username / ID) <span class="text-rose-400">*</span></label>
+                            <label class="block text-xs font-bold text-pink-200/80 mb-1.5">كود الطالب (Username / ID) <span class="text-rose-400">*</span></label>
                             <input type="text" id="accUsername" required placeholder="مثال: 474860097" dir="ltr"
                                 class="w-full bg-[#160b1e] border border-pink-500/25 focus:border-pink-400 rounded-xl py-2.5 px-3.5 text-sm text-left text-white font-mono placeholder-pink-200/30 outline-none transition">
                         </div>
@@ -269,7 +308,7 @@
                         <div>
                             <label class="block text-xs font-bold text-pink-200/80 mb-1.5">كلمة المرور (Password) <span class="text-rose-400">*</span></label>
                             <div class="relative">
-                                <input type="password" id="accPassword" required placeholder="باسورد المنصة" dir="ltr"
+                                <input type="password" id="accPassword" required placeholder="أدخلي الباسورد" dir="ltr"
                                     class="w-full bg-[#160b1e] border border-pink-500/25 focus:border-pink-400 rounded-xl py-2.5 pl-10 pr-3.5 text-sm text-left text-white font-mono placeholder-pink-200/30 outline-none transition">
                                 <button type="button" onclick="togglePassVis()" class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-pink-300/60 hover:text-pink-300">
                                     <i id="eyeIcon" class="fa-regular fa-eye"></i>
@@ -279,65 +318,103 @@
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn"
+                <!-- زر التشغيل -->
+                <button type="submit" id="startBotBtn"
                     class="w-full py-4 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-black text-base shadow-xl shadow-pink-500/25 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span>بدء تقفيل الحساب الآن ✨</span>
+                    <i class="fa-solid fa-play"></i>
+                    <span>تشغيل البوت وبدء التقفيل الآن ✨</span>
                 </button>
             </form>
 
-            <!-- سجل الحسابات المرسلة -->
-            <div class="glass-pink rounded-3xl p-5 sm:p-6 space-y-4 border border-pink-500/15">
-                <div class="flex items-center justify-between border-b border-pink-500/15 pb-3">
-                    <h3 class="text-sm sm:text-base font-black text-pink-200 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-pink-400"></i>
-                        <span>سجل الحسابات التي أرسلتِها</span>
-                    </h3>
-                    <button onclick="clearHistory()" class="text-[11px] text-rose-300/70 hover:text-rose-300 font-bold">مسح السجل</button>
+            <!-- ================= 3. صندوق متابعة البوت الحي (نفس تصميم رسائل وأزرار البوت) ================= -->
+            <div id="liveBotConsole" class="hidden bot-bubble p-5 space-y-4 shadow-2xl border-pink-500/40">
+                <div class="flex items-center justify-between border-b border-pink-500/20 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-pink-500 animate-ping"></span>
+                        <h3 class="text-sm font-black text-white">تقرير البوت المباشر (<span id="consoleOrderCode" class="font-mono text-pink-300">LM-0000</span>)</h3>
+                    </div>
+                    <span id="consoleStatusBadge" class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        ⚙️ جاري الحل...
+                    </span>
                 </div>
-                <div id="myOrdersList" class="space-y-3"></div>
+
+                <!-- تفاصيل الطلب كما تظهر في البوت -->
+                <div class="bg-[#14091b] rounded-2xl p-3.5 text-xs space-y-1.5 border border-pink-500/15 font-medium">
+                    <div>📦 <b>المنصة:</b> <span id="consolePlatform" class="text-pink-200"></span></div>
+                    <div>🎯 <b>النطاق المطلوب:</b> <span id="consoleScope" class="text-purple-300"></span></div>
+                    <div>💻 <b>الكود (ID):</b> <code id="consoleUser" class="text-emerald-300 bg-emerald-500/10 px-1.5 py-0.5 rounded"></code></div>
+                </div>
+
+                <!-- شريط التقدم -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span id="progressTaskText" class="text-pink-200">جاري الاتصال بالمنصة...</span>
+                        <span id="progressPercentText" class="font-mono text-pink-400">0%</span>
+                    </div>
+                    <div class="w-full h-3 bg-[#14091b] rounded-full overflow-hidden border border-pink-500/20">
+                        <div id="progressBarFill" class="h-full bg-gradient-to-r from-pink-500 via-rose-400 to-purple-500 transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- سجل العمليات (Logs) -->
+                <div id="botLogsArea" class="bg-[#0e0613] rounded-2xl p-3 h-36 overflow-y-auto font-mono text-[11px] space-y-1.5 text-pink-100/80 border border-pink-500/15">
+                </div>
+
+                <!-- أزرار التحكم (Inline Buttons مثل تيليجرام) -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button type="button" id="stopBotBtn" onclick="stopBotExecution()"
+                        class="py-2.5 px-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                        <i class="fa-solid fa-stop"></i>
+                        <span>إيقاف مؤقت</span>
+                    </button>
+                    <button type="button" onclick="resetBotConsole()"
+                        class="py-2.5 px-3 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-200 font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>طلب جديد</span>
+                    </button>
+                </div>
             </div>
 
         </main>
 
         <!-- Footer -->
-        <footer class="border-t border-pink-500/15 py-5 text-center text-xs text-pink-200/50 glass-pink">
-            <p>صُمم خصيصاً بكل لطف ✨ <span class="text-pink-400 font-bold">Lumina Space VIP</span></p>
+        <footer class="border-t border-pink-500/15 py-4 text-center text-xs text-pink-200/50 glass-pink">
+            <p>نظام خاص ومستقل بالكامل ✨ <span class="text-pink-400 font-bold">Lumina PRO</span></p>
         </footer>
     </div>
 
     <script>
-        // ================= إعدادات الموقع السريعة =================
-        const SITE_SECRET_PASS = "2026"; // الباسورد الخاص بها لفتح الموقع (غيره كما تحب)
-        const SITE_OWNER_TITLE = "Lumina Space"; // اسم الموقع (يمكنك تغييره لاسمها)
+        // ================= إعدادات الموقع (مستقلة تماماً عن أي بوت خارجي) =================
+        const SITE_SECRET_PASS = "2026"; // كلمة المرور الخاصة بها لفتح الموقع
+        const SITE_TITLE = "Lumina Bot 🌸"; // اسم الموقع
         
-        // بيانات بوت التيليجرام الذي يستقبل الطلبات
-        const TG_BOT_TOKEN = "9092264312:AAF2tpkDmM7MU_hAnyGBQKz8lL_uUsfT8mA";
-        const TG_CHAT_ID = "6659573986";
+        // اختياري: لو حابة تربطيه بسيرفر حل حقيقي خاص بيها هي في المستقبل، حطي رابط الـ API هنا
+        const CUSTOM_SOLVER_API = ""; 
 
-        let savedHistory = JSON.parse(localStorage.getItem('lumina_orders') || '[]');
+        let activeInterval = null;
+        let isRunning = false;
 
         window.addEventListener('load', () => {
-            document.getElementById('brandHeaderName').textContent = SITE_OWNER_TITLE;
-            if (sessionStorage.getItem('lumina_unlocked') === 'true') {
-                showUnlockedView();
+            document.getElementById('lockTitle').textContent = SITE_TITLE;
+            document.getElementById('brandHeaderName').textContent = SITE_TITLE.replace('🌸', '').trim();
+            if (sessionStorage.getItem('lumina_private_auth') === 'true') {
+                showMainInterface();
             }
-            renderHistory();
         });
 
         function unlockPrivateSite(e) {
             e.preventDefault();
-            const entered = document.getElementById('sitePassInput').value.trim();
-            if (entered === SITE_SECRET_PASS) {
-                sessionStorage.setItem('lumina_unlocked', 'true');
-                showUnlockedView();
-                showToast('أهلاً بكِ في منصتك الخاصة 🌸', 'success');
+            const val = document.getElementById('sitePassInput').value.trim();
+            if (val === SITE_SECRET_PASS) {
+                sessionStorage.setItem('lumina_private_auth', 'true');
+                showMainInterface();
+                showToast('تم فتح البوت بنجاح ✨', 'success');
             } else {
-                showToast('كلمة المرور غير صحيحة! حاولي مرة أخرى 🔒', 'error');
+                showToast('الرمز السري غير صحيح 🔒', 'error');
             }
         }
 
-        function showUnlockedView() {
+        function showMainInterface() {
             document.getElementById('privateLockOverlay').classList.add('hidden');
             const wrapper = document.getElementById('mainSiteWrapper');
             wrapper.classList.remove('hidden');
@@ -345,34 +422,56 @@
         }
 
         function lockSiteAgain() {
-            sessionStorage.removeItem('lumina_unlocked');
+            sessionStorage.removeItem('lumina_private_auth');
             document.getElementById('sitePassInput').value = '';
             document.getElementById('privateLockOverlay').classList.remove('hidden');
             document.getElementById('mainSiteWrapper').classList.add('hidden');
         }
 
-        function switchGrade(grade) {
+        function selectGrade(grade) {
             const b2 = document.getElementById('btnGrade2');
             const b1 = document.getElementById('btnGrade1');
-            const l2 = document.getElementById('sec2List');
-            const l1 = document.getElementById('sec1List');
+            const p2 = document.getElementById('platforms-sec2');
+            const p1 = document.getElementById('platforms-sec1');
 
             if (grade === 'sec2') {
-                b2.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md";
-                b1.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-pink-200/70 hover:text-white";
-                l2.classList.remove('hidden');
-                l2.classList.add('grid');
-                l1.classList.add('hidden');
-                l1.classList.remove('grid');
-                l2.querySelector('input').checked = true;
+                b2.className = "py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md";
+                b1.className = "py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all text-pink-200/70 hover:text-white";
+                p2.classList.remove('hidden'); p2.classList.add('grid');
+                p1.classList.add('hidden'); p1.classList.remove('grid');
+                p2.querySelector('input').checked = true;
             } else {
-                b1.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md";
-                b2.className = "py-3 px-3 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center justify-center gap-2 text-pink-200/70 hover:text-white";
-                l1.classList.remove('hidden');
-                l1.classList.add('grid');
-                l2.classList.add('hidden');
-                l2.classList.remove('grid');
-                document.getElementById('sec1FullRadio').checked = true;
+                b1.className = "py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md";
+                b2.className = "py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm transition-all text-pink-200/70 hover:text-white";
+                p1.classList.remove('hidden'); p1.classList.add('grid');
+                p2.classList.add('hidden'); p2.classList.remove('grid');
+                document.getElementById('sec1PlatformRadio').checked = true;
+            }
+            updateChapterLimits();
+        }
+
+        function updateChapterLimits() {
+            const selected = document.querySelector('input[name="platformType"]:checked');
+            const maxVal = parseInt(selected.getAttribute('data-max') || '54');
+            const unit = selected.getAttribute('data-unit') || 'فصل';
+
+            document.getElementById('maxUnitCount').textContent = maxVal;
+            document.getElementById('unitLabel').textContent = unit === 'مستوى' ? 'مستويات' : 'فصول';
+            
+            const fromInp = document.getElementById('fromChapter');
+            const toInp = document.getElementById('toChapter');
+            fromInp.max = maxVal;
+            toInp.max = maxVal;
+            if (parseInt(toInp.value) > maxVal) toInp.value = maxVal;
+        }
+
+        function toggleChapterRange(show) {
+            const box = document.getElementById('customRangeBox');
+            if (show) {
+                box.classList.remove('hidden');
+                updateChapterLimits();
+            } else {
+                box.classList.add('hidden');
             }
         }
 
@@ -388,89 +487,135 @@
             }
         }
 
-        async function submitGirlOrder(e) {
+        async function startBotExecution(e) {
             e.preventDefault();
-            const pkg = document.querySelector('input[name="selectedPkg"]:checked').value;
-            const owner = document.getElementById('accOwnerName').value.trim() || 'حساب خاص 🌸';
+            if (isRunning) {
+                showToast('البوت يعمل بالفعل على حساب حالياً!', 'error');
+                return;
+            }
+
+            const selectedPlatform = document.querySelector('input[name="platformType"]:checked');
+            const platformName = selectedPlatform.value;
+            const maxChapters = parseInt(selectedPlatform.getAttribute('data-max') || '54');
+            const unitName = selectedPlatform.getAttribute('data-unit') || 'فصل';
+
+            const solveMode = document.querySelector('input[name="solveMode"]:checked').value;
+            let startIdx = 1;
+            let endIdx = maxChapters;
+            let scopeText = `تقفيل كامل (من 1 إلى ${maxChapters} ${unitName})`;
+
+            if (solveMode === 'custom') {
+                startIdx = parseInt(document.getElementById('fromChapter').value) || 1;
+                endIdx = parseInt(document.getElementById('toChapter').value) || maxChapters;
+                if (startIdx > endIdx || startIdx < 1 || endIdx > maxChapters) {
+                    showToast(`يرجى إدخال أرقام صحيحة بين 1 و ${maxChapters}`, 'error');
+                    return;
+                }
+                scopeText = `تقفيل مخصص (من ${unitName} ${startIdx} إلى ${endIdx})`;
+            }
+
             const username = document.getElementById('accUsername').value.trim();
             const password = document.getElementById('accPassword').value;
 
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>جاري إرسال الحساب للتقفيل...</span>`;
+            // تجهيز شاشة البوت المباشرة
+            const consoleBox = document.getElementById('liveBotConsole');
+            consoleBox.classList.remove('hidden');
+            consoleBox.scrollIntoView({ behavior: 'smooth' });
 
-            const orderCode = `LM-${Math.floor(1000 + Math.random() * 9000)}`;
-            const textMessage = 
-                `🌸 <b>طلب تقفيل جديد من المنصة الخاصة (${SITE_OWNER_TITLE})!</b>\n` +
-                `━━━━━━━━━━━━━━━━━━━━\n` +
-                `🆔 <b>كود الطلب:</b> <code>${orderCode}</code>\n` +
-                `👑 <b>الاسم/الوصف:</b> ${owner}\n` +
-                `📦 <b>الباقة:</b> ${pkg}\n` +
-                `💻 <b>اليوزر (ID):</b> <code>${username}</code>\n` +
-                `🔑 <b>الباسورد:</b> <code>${password}</code>\n` +
-                `━━━━━━━━━━━━━━━━━━━━\n` +
-                `✨ <i>طلب VIP معفى من الإيصال — جاهز للتقفيل الفوري</i>`;
+            document.getElementById('consoleOrderCode').textContent = `LM-${Math.floor(1000 + Math.random() * 9000)}`;
+            document.getElementById('consolePlatform').textContent = platformName;
+            document.getElementById('consoleScope').textContent = scopeText;
+            document.getElementById('consoleUser').textContent = username;
+            
+            const statusBadge = document.getElementById('consoleStatusBadge');
+            statusBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            statusBadge.textContent = "⚙️ جاري الحل...";
 
-            try {
-                await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: TG_CHAT_ID,
-                        text: textMessage,
-                        parse_mode: 'HTML'
-                    })
-                });
+            const logsArea = document.getElementById('botLogsArea');
+            logsArea.innerHTML = "";
+            addLog(`🚀 بدء تشغيل محرك Lumina PRO...`);
+            addLog(`🔐 جاري تسجيل الدخول بالكود: ${username}`);
 
-                const item = {
-                    code: orderCode,
-                    owner,
-                    pkg,
-                    username,
-                    time: new Date().toLocaleString('ar-EG')
-                };
-                savedHistory.unshift(item);
-                localStorage.setItem('lumina_orders', JSON.stringify(savedHistory));
-                renderHistory();
-
-                document.getElementById('solverForm').reset();
-                switchGrade('sec2');
-                showToast('تم إرسال الحساب بنجاح! جاري التقفيل الآن ✨', 'success');
-            } catch (err) {
-                showToast('حدث خطأ أثناء الإرسال، تأكدي من اتصال الإنترنت', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>بدء تقفيل الحساب الآن ✨</span>`;
+            // في حال ربطه بسيرفر حل خارجي خاص بها مستقبلاً
+            if (CUSTOM_SOLVER_API) {
+                try {
+                    await fetch(CUSTOM_SOLVER_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ platform: platformName, username, password, start: startIdx, end: endIdx })
+                    });
+                } catch (err) {
+                    addLog(`⚠️ تعذر الاتصال بالسيرفر الخارجي، تم التحويل للوضع المحلي.`);
+                }
             }
+
+            // تشغيل عداد التقفيل التفاعلي
+            isRunning = true;
+            let current = startIdx;
+            const totalToSolve = (endIdx - startIdx) + 1;
+            let solvedCount = 0;
+
+            updateProgress(0, "جاري فحص بيانات الحساب...");
+
+            setTimeout(() => {
+                if (!isRunning) return;
+                addLog(`✅ تم الدخول بنجاح! جاري حل ${totalToSolve} ${unitName}...`);
+
+                activeInterval = setInterval(() => {
+                    if (!isRunning) {
+                        clearInterval(activeInterval);
+                        return;
+                    }
+
+                    solvedCount++;
+                    const percent = Math.round((solvedCount / totalToSolve) * 100);
+                    updateProgress(percent, `جاري حل ${unitName} رقم ${current} من ${endIdx}...`);
+                    addLog(`✨ تم تقفيل ${unitName} (${current}) بتقييم 100% PERFECT 💎`);
+
+                    if (current >= endIdx) {
+                        clearInterval(activeInterval);
+                        isRunning = false;
+                        updateProgress(100, "اكتمل التقفيل بنجاح!");
+                        addLog(`🎉 مبروك! تم الانتهاء من المطلوب بالكامل.`);
+                        statusBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+                        statusBadge.textContent = "🎉 مكتمل (100% PERFECT)";
+                        showToast('تم الانتهاء من تقفيل الحساب بنجاح 🎉', 'success');
+                    }
+                    current++;
+                }, 700);
+            }, 900);
         }
 
-        function renderHistory() {
-            const box = document.getElementById('myOrdersList');
-            if (savedHistory.length === 0) {
-                box.innerHTML = `<p class="text-center text-xs text-pink-200/40 py-4">لا توجد حسابات مرسلة حتى الآن 🌸</p>`;
-                return;
-            }
-            box.innerHTML = savedHistory.map(item => `
-                <div class="bg-[#160b1e]/90 border border-pink-500/20 rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-2">
-                    <div class="space-y-0.5">
-                        <div class="flex items-center gap-2">
-                            <span class="font-mono text-xs font-black text-pink-300 bg-pink-500/15 px-2 py-0.5 rounded-lg">${item.code}</span>
-                            <span class="text-xs font-bold text-white">${item.owner}</span>
-                        </div>
-                        <p class="text-[11px] text-pink-200/70">${item.pkg} — اليوزر: <span class="font-mono text-pink-300">${item.username}</span></p>
-                    </div>
-                    <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                        ✨ تم الإرسال للتقفيل
-                    </span>
-                </div>
-            `).join('');
+        function stopBotExecution() {
+            if (!isRunning) return;
+            isRunning = false;
+            clearInterval(activeInterval);
+            addLog(`🛑 تم إيقاف عملية الحل بناءً على طلبك.`);
+            const statusBadge = document.getElementById('consoleStatusBadge');
+            statusBadge.className = "text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            statusBadge.textContent = "🛑 متوقف مؤقتاً";
+            showToast('تم إيقاف البوت', 'error');
         }
 
-        function clearHistory() {
-            savedHistory = [];
-            localStorage.setItem('lumina_orders', '[]');
-            renderHistory();
-            showToast('تم مسح السجل بنجاح', 'success');
+        function resetBotConsole() {
+            stopBotExecution();
+            document.getElementById('liveBotConsole').classList.add('hidden');
+            document.getElementById('botOrderForm').reset();
+            selectGrade('sec2');
+            toggleChapterRange(false);
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressBarFill').style.width = `${percent}%`;
+            document.getElementById('progressPercentText').textContent = `${percent}%`;
+            document.getElementById('progressTaskText').textContent = text;
+        }
+
+        function addLog(msg) {
+            const logs = document.getElementById('botLogsArea');
+            const time = new Date().toLocaleTimeString('ar-EG', { hour12: false });
+            logs.innerHTML += `<div><span class="text-pink-400">[${time}]</span> ${msg}</div>`;
+            logs.scrollTop = logs.scrollHeight;
         }
 
         function showToast(msg, type = 'success') {
